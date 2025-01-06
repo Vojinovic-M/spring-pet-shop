@@ -9,8 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequestMapping("user")
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class UserController {
     private final UserService userService;
 
@@ -29,15 +33,26 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDtoLogin loginRequest) {
+    public ResponseEntity<?> login(@RequestBody UserDtoLogin loginRequest) {
         UserEntity user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         if (user != null) {
-            // Generate and return a JWT token or session token (for now, return "logged in").
-            return ResponseEntity.ok("Logged in successfully");
+            // Construct a response map
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Logged in successfully");
+            response.put("user", new HashMap<>() {{
+                put("id", user.getId());
+                put("firstName", user.getFirstName());
+                put("lastName", user.getLastName());
+                put("email", user.getEmail());
+            }});
+
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
+
 
 
 }

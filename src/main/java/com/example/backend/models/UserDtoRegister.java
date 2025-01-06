@@ -3,6 +3,7 @@ package com.example.backend.models;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 import org.hibernate.validator.constraints.Email;
 
 @Data
