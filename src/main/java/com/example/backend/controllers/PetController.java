@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/pets")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class PetController {
     private final PetService petService;
 
