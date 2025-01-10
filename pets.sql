@@ -19,7 +19,7 @@ create table users (
     first_name varchar(20) not null,
     last_name varchar(40) not null,
     email varchar(80) not null,
-    phone int(12) not null,
+    phone varchar(13) not null,
     address varchar(120) not null,
     password varchar(200) not null
 );
@@ -56,7 +56,7 @@ insert into users (first_name, last_name, email, phone, address, password) value
 	('Luka', 'Lukic', 'luka@gmail.com','3816060606', 'Pristina', '$2a$10$3wB61PSySqN4.xKFC5Q47e2GRB12Z.lRYoYAm0V9ZtjF0vMyLX6Dq'),
 	('Jovan', 'Jovanovic', 'jovan@gmail.com','38160121212', 'Negotin', '$2a$10$.WCPIsFFi2sflgLL5LwP.OpK1ju.cZZRobaZgu0TSVQl5fGuPQwAa'),
 	('Darko', 'Darkovic', 'darko@gmail.com','38160121212', 'Gnjilane', '$2a$10$.ZzLHvPCQP3UKnbGnrSci.SeoEXLTYGaCXtQYD8qj9wQfzG6whx0G'),
-	('Akstenije', 'Aksentijevic', 'aksentije@gmail.com','38160121212', 'Raska', '$2a$10$Xn1E/Ohjq3U7AtVCnBv9/uJAqx3nQH.0LVqlvdjje8fkCryTDZgSe'),
+	('Aksentije', 'Aksentijevic', 'aksentije@gmail.com','38160121212', 'Raska', '$2a$10$Xn1E/Ohjq3U7AtVCnBv9/uJAqx3nQH.0LVqlvdjje8fkCryTDZgSe'),
 	('Bogdan', 'Bogdanovic', 'bogdan@gmail.com','38160121212', 'Kraljevo', '$2a$10$7kgzRp2v3tK5uGEznK0Z8OXO5EiWpWn2zz9rcO4zNISEbwKl00H5u'),
 	('Cvetolik', 'Cvetolikovic', 'cvetolik@gmail.com','38160121212', 'Backa Palanka', '$2a$10$mJdOhxG.PSvKdvr2zSrr9ejiPynHkcxlOalO9Uzj9vvAJtgOQwGt6'),
 	('Dragoslav', 'Dragoslavljevic', 'dragoslav@gmail.com','38160121212', 'Jagodina', '$2a$10$Ea8hUItNl3dXk0.LHtV1hO7iH6CzLlemVcU7I0/msX40y1sWqQIbW'),

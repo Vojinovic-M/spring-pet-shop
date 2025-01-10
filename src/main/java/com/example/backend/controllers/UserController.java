@@ -6,19 +6,23 @@ import com.example.backend.models.UserDtoRegister;
 import com.example.backend.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@RequestMapping("user")
+@RequestMapping("/user")
 @RestController
 public class UserController {
-    private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+
+    public UserController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("/hello")
@@ -31,27 +35,24 @@ public class UserController {
         return ResponseEntity.ok(userService.create(userDtoRegister));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserDtoLogin loginRequest) {
-        UserEntity user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-        if (user != null) {
-            // Construct a response map
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Logged in successfully");
-            response.put("user", new HashMap<>() {{
-                put("id", user.getId());
-                put("firstName", user.getFirstName());
-                put("lastName", user.getLastName());
-                put("email", user.getEmail());
-            }});
 
-            return ResponseEntity.ok(response);
-        } else {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserDtoLogin loginDto) {
+        UserEntity user = userService.authenticate(loginDto.getEmail(), loginDto.getPassword());
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("firstName", user.getFirstName());
+        response.put("lastName", user.getLastName());
+        response.put("email", user.getEmail());
+        response.put("phone", user.getPhone());
+        response.put("address", user.getAddress());
+
+        return ResponseEntity.ok(response);
     }
 
+};
 
-
-
-}

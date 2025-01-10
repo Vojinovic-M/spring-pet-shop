@@ -14,7 +14,7 @@ public class UserDtoRegister {
     private String lastName;
     @Email
     private String email;
-    private Integer phone;
+    private String phone;
     private String address;
     private String password;
 }

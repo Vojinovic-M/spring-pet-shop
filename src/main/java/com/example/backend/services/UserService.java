@@ -3,7 +3,6 @@ package com.example.backend.services;
 import com.example.backend.entities.UserEntity;
 import com.example.backend.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.backend.entities.IUserService;
 import com.example.backend.models.UserDtoRegister;
@@ -17,6 +16,7 @@ import java.util.Optional;
 public class UserService implements IUserService {
     private final IUserRepository IUserRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final IUserRepository userRepository;
 
     @Override
     public UserDtoRegister create(UserDtoRegister userDtoRegister) {
@@ -26,14 +26,8 @@ public class UserService implements IUserService {
     }
 
     public UserEntity authenticate(String email, String password) {
-        UserEntity userEntity = IUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password"));
-        if (passwordEncoder.matches(password, userEntity.getPassword())) {
-            return userEntity;
-        } else {
-            throw new UsernameNotFoundException("Invalid email or password");
-        }
+        return userRepository.findByEmail(email)
+        .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+        .orElse(null);
     }
-
-
 }

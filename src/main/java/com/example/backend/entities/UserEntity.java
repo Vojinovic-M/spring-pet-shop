@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.List;
 
 @Setter
@@ -12,7 +16,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,7 +27,7 @@ public class UserEntity {
     @Column(name = "email", unique = true)
     private String email;
     @Column(name = "phone")
-    private Integer phone;
+    private String phone;
     @Column(name = "address")
     private String address;
     @Column(name = "password")
@@ -33,21 +37,13 @@ public class UserEntity {
     @JsonIgnore
     private List<OrderEntity> orders;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
     public String getUsername() {
-        return email;
-    }
-
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    public boolean isAccountNonLocked() { return true; }
-
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    public boolean isEnabled() {
-        return true;
+        return "";
     }
 }
