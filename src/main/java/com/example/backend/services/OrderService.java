@@ -71,7 +71,7 @@ public class OrderService {
         }
     }
 
-    public List<OrderResponseDto> getAllOrders() {
+    public List<OrderResponseDto> getOrders() {
         return IOrderRepository.findAll()
                 .stream()
                 .map(OrderMapper::toResponseDto)

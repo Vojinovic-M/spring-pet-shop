@@ -6,6 +6,9 @@ import com.example.backend.models.OrderDto;
 import com.example.backend.models.OrderResponseDto;
 import com.example.backend.services.OrderService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,9 +47,13 @@ public class OrderController {
         return ResponseEntity.ok(orderService.addRating(orderId, rating));
     }
 
-    @GetMapping
-    public List<OrderResponseDto> getAllOrders() {
-        return orderService.getAllOrders();
+    @GetMapping("")
+    public List<OrderResponseDto> getOrders() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+            String username = userDetails.getUsername();
+        }
+        return orderService.getOrders(); // Return orders for authenticated user
     }
 
     @GetMapping("/user/{userId}")
