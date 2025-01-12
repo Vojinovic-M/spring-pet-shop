@@ -30,6 +30,7 @@ create table orders (
     order_status varchar(15),
     created_at TIMESTAMP DEFAULT current_timestamp not null,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    rating int(2),
 	constraint fk_person_order foreign key (user_id) references users(id),
     constraint fk_pet_order foreign key (pet_id) references dogs(id)
 );

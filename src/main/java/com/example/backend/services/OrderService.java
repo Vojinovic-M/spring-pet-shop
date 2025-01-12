@@ -3,13 +3,17 @@ import com.example.backend.entities.OrderEntity;
 import com.example.backend.entities.PetEntity;
 import com.example.backend.entities.UserEntity;
 import com.example.backend.enums.OrderStatus;
+import com.example.backend.mappers.OrderMapper;
+import com.example.backend.models.OrderResponseDto;
 import com.example.backend.repositories.IOrderRepository;
 import com.example.backend.repositories.IPetRepository;
 import com.example.backend.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -45,10 +49,39 @@ public class OrderService {
         if (optionalOrder.isPresent()) {
             OrderEntity order = optionalOrder.get();
             order.setOrderStatus(status);
-            order.setUpdatedAt(java.time.LocalDateTime.now());
+            order.setUpdatedAt(LocalDateTime.now());
             return IOrderRepository.save(order);
         } else {
             throw new IllegalArgumentException("Order not found with ID: " + orderId);
         }
+    }
+
+    public OrderEntity addRating(int orderId, int rating) {
+        Optional<OrderEntity> optionalOrder = IOrderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            OrderEntity order = optionalOrder.get();
+            if (order.getOrderStatus() != OrderStatus.COMPLETED) {
+                throw new IllegalArgumentException("Only completed orders can be rated");
+            }
+            order.setRating(rating);
+            order.setUpdatedAt(LocalDateTime.now());
+            return IOrderRepository.save(order);
+        } else {
+            throw new IllegalArgumentException("Order not found with ID: " + orderId);
+        }
+    }
+
+    public List<OrderResponseDto> getAllOrders() {
+        return IOrderRepository.findAll()
+                .stream()
+                .map(OrderMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderResponseDto> getOrdersByUserId(int userId) {
+        List<OrderEntity> orders = IOrderRepository.findByUserId(userId);
+        return orders.stream()
+                .map(OrderMapper::toResponseDto)
+                .collect(Collectors.toList());
     }
 }
