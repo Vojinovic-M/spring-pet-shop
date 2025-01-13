@@ -20,6 +20,10 @@ public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name="google_id", unique = true, nullable = true)
+    private String googleId;
+
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")

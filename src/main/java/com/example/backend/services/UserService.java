@@ -16,7 +16,6 @@ import java.util.Optional;
 public class UserService implements IUserService {
     private final IUserRepository IUserRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final IUserRepository userRepository;
 
     @Override
     public UserDtoRegister create(UserDtoRegister userDtoRegister) {
@@ -25,8 +24,24 @@ public class UserService implements IUserService {
         return UserMapper.toDto(result);
     }
 
+    public Optional<UserEntity> createGoogleUser(String googleId, String email, String firstName, String lastName) {
+        Optional<UserEntity> existingUser = IUserRepository.findByGoogleId(googleId);
+        if (existingUser.isPresent()) {
+            return existingUser; // User already exists
+        }
+
+        UserEntity newUser = new UserEntity();
+        newUser.setGoogleId(googleId);
+        newUser.setEmail(email);
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+
+        return Optional.of(IUserRepository.save(newUser));
+    }
+
+
     public UserEntity authenticate(String email, String password) {
-        return userRepository.findByEmail(email)
+        return IUserRepository.findByEmail(email)
         .filter(user -> passwordEncoder.matches(password, user.getPassword()))
         .orElse(null);
     }

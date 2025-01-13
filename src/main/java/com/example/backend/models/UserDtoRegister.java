@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.Email;
 @Data
 @Builder
 public class UserDtoRegister {
-    private int id;
+    private Integer id;
     private String firstName;
     private String lastName;
     @Email

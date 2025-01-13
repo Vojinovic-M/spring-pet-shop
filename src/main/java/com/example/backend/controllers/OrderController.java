@@ -24,7 +24,8 @@ public class OrderController {
 
     @PostMapping("/create")
     public OrderEntity createOrder(@RequestBody OrderDto orderDto) {
-        return orderService.createOrder(orderDto.getPetId(), orderDto.getUserId());
+        Integer userId = orderDto.getUserId();
+        return orderService.createOrder(String.valueOf(userId), orderDto.getUserId());
     }
 
     @PutMapping("/{orderId}/status")
@@ -47,17 +48,19 @@ public class OrderController {
         return ResponseEntity.ok(orderService.addRating(orderId, rating));
     }
 
-    @GetMapping("")
-    public List<OrderResponseDto> getOrders() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            String username = userDetails.getUsername();
-        }
-        return orderService.getOrders(); // Return orders for authenticated user
+    @GetMapping("/orders/{userId}")
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByUserId(@PathVariable int userId) {
+        List<OrderResponseDto> orders = orderService.getOrdersByUserId(userId);
+        return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderResponseDto>> getOrdersByUserId(@PathVariable int userId) {
-        return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
-    }
+
+//    @GetMapping("")
+//    public List<OrderResponseDto> getOrders() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+//            String username = userDetails.getUsername();
+//        }
+//        return orderService.getOrders(); // Return orders for authenticated user
+//    }
 }

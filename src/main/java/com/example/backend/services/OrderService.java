@@ -8,6 +8,9 @@ import com.example.backend.models.OrderResponseDto;
 import com.example.backend.repositories.IOrderRepository;
 import com.example.backend.repositories.IPetRepository;
 import com.example.backend.repositories.IUserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,12 +31,20 @@ public class OrderService {
         this.IPetRepository = IPetRepository;
     }
 
-    public OrderEntity createOrder(int userId, int petId) {
-        UserEntity user = IUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public OrderEntity createOrder(String userId, Integer petId) {
+        UserEntity user;
+
+        if (userId.matches("\\d+")) {
+            user = IUserRepository.findById(Integer.parseInt(userId))
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        } else {
+            user = IUserRepository.findByGoogleId(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("Google user not found"));
+        }
 
         PetEntity pet = IPetRepository.findById(petId)
                 .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
+
 
         OrderEntity order = new OrderEntity();
         order.setUser(user);
@@ -71,13 +82,25 @@ public class OrderService {
         }
     }
 
-    public List<OrderResponseDto> getOrders() {
-        return IOrderRepository.findAll()
-                .stream()
-                .map(OrderMapper::toResponseDto)
-                .collect(Collectors.toList());
-    }
-
+//    public List<OrderResponseDto> getOrders() {
+//        // Fetch the authenticated user's email
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+//            String email = userDetails.getUsername();
+//            // Retrieve the user entity using their email
+//            UserEntity user = IUserRepository.findByEmail(email)
+//                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+//
+//            // Fetch orders for the authenticated user
+//            List<OrderEntity> orders = IOrderRepository.findByUserId(user.getId());
+//            return orders.stream()
+//                    .map(OrderMapper::toResponseDto)
+//                    .collect(Collectors.toList());
+//        } else {
+//            throw new IllegalArgumentException("Unauthorized user");
+//        }
+//    }
+//
     public List<OrderResponseDto> getOrdersByUserId(int userId) {
         List<OrderEntity> orders = IOrderRepository.findByUserId(userId);
         return orders.stream()
