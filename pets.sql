@@ -18,10 +18,11 @@ create table users (
 	id int unsigned not null auto_increment primary key,
     first_name varchar(20) not null,
     last_name varchar(40) not null,
-    email varchar(80) not null,
-    phone varchar(13) not null,
-    address varchar(120) not null,
-    password varchar(200) not null
+    email varchar(80) not null unique,
+    phone varchar(13),
+    address varchar(120),
+    google_id varchar(255),
+    password varchar(200)
 );
 create table orders (
 	id int unsigned not null auto_increment primary key,

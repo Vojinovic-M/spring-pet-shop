@@ -1,13 +1,7 @@
 package com.example.backend.configuration;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,11 +12,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration {
-    private final AuthenticationProvider authenticationProvider;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,12 +25,12 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/login", "/user/register").permitAll() // Public endpoints
-                        .requestMatchers("/user/dashboard", "/cart/**").authenticated() // Protected endpoints
+                        .requestMatchers("/user/login", "/user/register", "/user/google-login").permitAll() // Public endpoints
+                        .requestMatchers("/user/dashboard", "/cart/**", "/orders/**").authenticated() // Protected endpoints
                         .anyRequest().permitAll() // Everything else public
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
-                .authenticationProvider(authenticationProvider);
+                .httpBasic(withDefaults());
         return http.build();
     }
 
@@ -57,4 +52,5 @@ public class SecurityConfiguration {
 
         return source;
     }
+
 }

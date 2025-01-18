@@ -4,16 +4,15 @@ import com.example.backend.entities.PetEntity;
 import com.example.backend.entities.UserEntity;
 import com.example.backend.enums.OrderStatus;
 import com.example.backend.mappers.OrderMapper;
+import com.example.backend.models.OrderDto;
 import com.example.backend.models.OrderResponseDto;
 import com.example.backend.repositories.IOrderRepository;
 import com.example.backend.repositories.IPetRepository;
 import com.example.backend.repositories.IUserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,20 +30,13 @@ public class OrderService {
         this.IPetRepository = IPetRepository;
     }
 
-    public OrderEntity createOrder(String userId, Integer petId) {
-        UserEntity user;
+    public OrderEntity createOrder(OrderDto orderDto, String username) {
 
-        if (userId.matches("\\d+")) {
-            user = IUserRepository.findById(Integer.parseInt(userId))
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        } else {
-            user = IUserRepository.findByGoogleId(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Google user not found"));
-        }
+        UserEntity user = IUserRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        PetEntity pet = IPetRepository.findById(petId)
-                .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
-
+        PetEntity pet = IPetRepository.findById(orderDto.getPetId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         OrderEntity order = new OrderEntity();
         order.setUser(user);
@@ -82,29 +74,35 @@ public class OrderService {
         }
     }
 
-//    public List<OrderResponseDto> getOrders() {
-//        // Fetch the authenticated user's email
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-//            String email = userDetails.getUsername();
-//            // Retrieve the user entity using their email
-//            UserEntity user = IUserRepository.findByEmail(email)
-//                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
-//
-//            // Fetch orders for the authenticated user
-//            List<OrderEntity> orders = IOrderRepository.findByUserId(user.getId());
-//            return orders.stream()
-//                    .map(OrderMapper::toResponseDto)
-//                    .collect(Collectors.toList());
-//        } else {
-//            throw new IllegalArgumentException("Unauthorized user");
-//        }
+//    public List<OrderResponseDto> getOrdersByUserId(Integer userId) {
+//        List<OrderEntity> orders = IOrderRepository.findByUserId(userId);
+//        return orders.isEmpty() ? Collections.emptyList() : orders.stream()
+//                .map(OrderMapper::toResponseDto)
+//                .collect(Collectors.toList());
 //    }
 //
-    public List<OrderResponseDto> getOrdersByUserId(int userId) {
-        List<OrderEntity> orders = IOrderRepository.findByUserId(userId);
-        return orders.stream()
-                .map(OrderMapper::toResponseDto)
-                .collect(Collectors.toList());
+//    public List<OrderEntity> getOrdersByUserEmail(String email) {
+//        UserEntity user = IUserRepository.findByEmail(email)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//        return IOrderRepository.findOrdersByUserId(user.getId());
+//    }
+
+    public OrderEntity cancelOrder(int orderId) {
+        Optional<OrderEntity> optionalOrder = IOrderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            OrderEntity order = optionalOrder.get();
+            if (order.getOrderStatus() == OrderStatus.CANCELLED) {
+                throw new IllegalArgumentException("Order is already cancelled.");
+            }
+            if (order.getOrderStatus() == OrderStatus.COMPLETED) {
+                throw new IllegalArgumentException("Completed orders cannot be cancelled.");
+            }
+            order.setOrderStatus(OrderStatus.CANCELLED);
+            order.setUpdatedAt(LocalDateTime.now());
+            return IOrderRepository.save(order);
+        } else {
+            throw new IllegalArgumentException("Order not found with ID: " + orderId);
+        }
     }
+
 }

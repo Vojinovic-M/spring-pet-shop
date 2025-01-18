@@ -24,7 +24,7 @@ public class OrderEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
-    private OrderStatus orderStatus = OrderStatus.PENDING;
+    private OrderStatus orderStatus = OrderStatus.IN_PROGRESS;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
@@ -43,7 +43,7 @@ public class OrderEntity {
         this.createdAt = now;
         this.updatedAt = now;
         if (this.orderStatus == null) {
-            this.orderStatus = OrderStatus.PENDING;
+            this.orderStatus = OrderStatus.IN_PROGRESS;
         }
     }
 

@@ -9,6 +9,7 @@ import com.example.backend.models.UserDtoRegister;
 import com.example.backend.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,26 +25,38 @@ public class UserService implements IUserService {
         return UserMapper.toDto(result);
     }
 
-    public Optional<UserEntity> createGoogleUser(String googleId, String email, String firstName, String lastName) {
-        Optional<UserEntity> existingUser = IUserRepository.findByGoogleId(googleId);
-        if (existingUser.isPresent()) {
-            return existingUser; // User already exists
-        }
+    public UserEntity registerOrUpdateGoogleUser(Map<String, Object> googleUserData) {
+        String googleId = (String) googleUserData.get("googleId");
+        String email = (String) googleUserData.get("email");
+        String firstName = (String) googleUserData.get("firstName");
+        String lastName = (String) googleUserData.get("lastName");
 
-        UserEntity newUser = new UserEntity();
-        newUser.setGoogleId(googleId);
-        newUser.setEmail(email);
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-
-        return Optional.of(IUserRepository.save(newUser));
+        // Use findByGoogleId to check if the user exists
+        return IUserRepository.findByGoogleId(googleId)
+                .orElseGet(() -> {
+                    // Create a new user if not found
+                    UserEntity newUser = new UserEntity();
+                    newUser.setGoogleId(googleId);
+                    newUser.setEmail(email);
+                    newUser.setFirstName(firstName);
+                    newUser.setLastName(lastName);
+                    newUser.setPassword(""); // Google users don’t need a password
+                    return IUserRepository.save(newUser);
+                });
     }
-
 
     public UserEntity authenticate(String email, String password) {
-        return IUserRepository.findByEmail(email)
-        .filter(user -> passwordEncoder.matches(password, user.getPassword()))
-        .orElse(null);
+        Optional<UserEntity> userOptional = IUserRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            System.out.println("User not found with email " + email);
+            return null;
+        }
+        UserEntity user = userOptional.get();
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            System.out.println("Wrong password for user " + email);
+            return null;
+        }
+        System.out.println("Authentication successful for user: " + email);
+        return user;
     }
-
 }

@@ -1,39 +1,42 @@
 package com.example.backend.controllers;
 
 import com.example.backend.entities.OrderEntity;
+import com.example.backend.entities.UserEntity;
 import com.example.backend.enums.OrderStatus;
 import com.example.backend.models.OrderDto;
-import com.example.backend.models.OrderResponseDto;
+import com.example.backend.models.OrderStatusUpdateDto;
 import com.example.backend.services.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @PostMapping("/create")
-    public OrderEntity createOrder(@RequestBody OrderDto orderDto) {
-        Integer userId = orderDto.getUserId();
-        return orderService.createOrder(String.valueOf(userId), orderDto.getUserId());
+    public ResponseEntity<OrderEntity> createOrder(@RequestBody OrderDto orderDto, Principal principal) {
+        String username = principal.getName();
+        OrderEntity createdOrder = orderService.createOrder(orderDto, username);
+        return ResponseEntity.ok(createdOrder);
     }
 
     @PutMapping("/{orderId}/status")
     public ResponseEntity<OrderEntity> updateOrderStatus(
             @PathVariable int orderId,
-            @RequestBody String status) {
+            @RequestBody OrderStatusUpdateDto orderStatusUpdateDto) {
         try {
-            OrderStatus newStatus = OrderStatus.valueOf(status.toUpperCase());
+            OrderStatus newStatus = OrderStatus.valueOf(orderStatusUpdateDto.getStatus().toUpperCase());
             OrderEntity updatedOrder = orderService.updateOrderStatus(orderId, newStatus);
             return ResponseEntity.ok(updatedOrder);
         } catch (IllegalArgumentException e) {
@@ -45,22 +48,35 @@ public class OrderController {
     public ResponseEntity<OrderEntity> addRating (
             @PathVariable int orderId,
             @RequestBody int rating) {
-        return ResponseEntity.ok(orderService.addRating(orderId, rating));
+        try {
+            OrderEntity updatedOrder = orderService.addRating(orderId, rating);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
-    @GetMapping("/orders/{userId}")
-    public ResponseEntity<List<OrderResponseDto>> getOrdersByUserId(@PathVariable int userId) {
-        List<OrderResponseDto> orders = orderService.getOrdersByUserId(userId);
-        return ResponseEntity.ok(orders);
+    @GetMapping
+    public ResponseEntity<?> getOrders(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("No user authenticated");
+        }
+
+        UserEntity user = (UserEntity) authentication.getPrincipal();
+        return ResponseEntity.ok(user.getOrders());
+    }
+
+    @PutMapping("/{orderId}/cancel")
+    public ResponseEntity<OrderEntity> cancelOrder(@PathVariable int orderId) {
+        try {
+            OrderEntity cancelledOrder = orderService.cancelOrder(orderId);
+            return ResponseEntity.ok(cancelledOrder);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
 
-//    @GetMapping("")
-//    public List<OrderResponseDto> getOrders() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-//            String username = userDetails.getUsername();
-//        }
-//        return orderService.getOrders(); // Return orders for authenticated user
-//    }
+
+
 }

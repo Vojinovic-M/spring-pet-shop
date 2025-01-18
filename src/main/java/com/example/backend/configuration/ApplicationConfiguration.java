@@ -40,27 +40,25 @@ public class ApplicationConfiguration {
     @Bean
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 }
-//    public static class PasswordHasher {
-//        public static void main(String[] args) {
-//            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//
-//            // Plain-text passwords
-//            String[] passwords = {
-//                    "matejmatej", "markomarko", "lukaluka", "jovanjovan",
-//                    "darkodarko", "aksentije", "bogdanbogdan",
-//                    "cvetolik", "dragoslav", "radasin", "petarpetar"
-//            };
-//
-//            // Hash each password
-//            for (String password : passwords) {
-//                System.out.println("Plain: " + password + " -> Hashed: " + encoder.encode(password));
-//            }
-//        }
+////    public static class PasswordHasher {
+////        public static void main(String[] args) {
+////            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+////
+////            // Plain-text passwords
+////            String[] passwords = {
+////                    "matejmatej", "markomarko", "lukaluka", "jovanjovan",
+////                    "darkodarko", "aksentije", "bogdanbogdan",
+////                    "cvetolik", "dragoslav", "radasin", "petarpetar"
+////            };
+////
+////            // Hash each password
+////            for (String password : passwords) {
+////                System.out.println("Plain: " + password + " -> Hashed: " + encoder.encode(password));
+////            }
+////        }
 //    }
