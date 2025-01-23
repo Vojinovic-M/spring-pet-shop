@@ -5,12 +5,14 @@ import com.example.backend.entities.UserEntity;
 import com.example.backend.enums.OrderStatus;
 import com.example.backend.models.OrderDto;
 import com.example.backend.models.OrderStatusUpdateDto;
+import com.example.backend.models.RatingDto;
 import com.example.backend.services.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
 
@@ -18,7 +20,7 @@ import java.security.Principal;
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
-    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
+//    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
@@ -45,15 +47,20 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/rating")
-    public ResponseEntity<OrderEntity> addRating (
+    public ResponseEntity<?> addRating (
             @PathVariable int orderId,
-            @RequestBody int rating) {
+            @RequestBody RatingDto ratingDto) {
         try {
-            OrderEntity updatedOrder = orderService.addRating(orderId, rating);
-            return ResponseEntity.ok(updatedOrder);
+            boolean success = orderService.addRating(orderId, ratingDto.getRating());
+            if (success) {
+                return ResponseEntity.ok("Rating saved successfully");
+            }
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to save rating");
     }
 
     @GetMapping

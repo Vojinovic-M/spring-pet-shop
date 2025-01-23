@@ -34,7 +34,7 @@ public class OrderEntity {
     @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 
-    @Column(name = "rating")
+    @Column(name = "rating", nullable = true)
     private Integer rating;
 
     @PrePersist

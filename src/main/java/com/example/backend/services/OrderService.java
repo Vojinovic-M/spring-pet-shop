@@ -3,19 +3,14 @@ import com.example.backend.entities.OrderEntity;
 import com.example.backend.entities.PetEntity;
 import com.example.backend.entities.UserEntity;
 import com.example.backend.enums.OrderStatus;
-import com.example.backend.mappers.OrderMapper;
 import com.example.backend.models.OrderDto;
-import com.example.backend.models.OrderResponseDto;
 import com.example.backend.repositories.IOrderRepository;
 import com.example.backend.repositories.IPetRepository;
 import com.example.backend.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -59,7 +54,11 @@ public class OrderService {
         }
     }
 
-    public OrderEntity addRating(int orderId, int rating) {
+    public boolean addRating(int orderId, int rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
         Optional<OrderEntity> optionalOrder = IOrderRepository.findById(orderId);
         if (optionalOrder.isPresent()) {
             OrderEntity order = optionalOrder.get();
@@ -68,24 +67,12 @@ public class OrderService {
             }
             order.setRating(rating);
             order.setUpdatedAt(LocalDateTime.now());
-            return IOrderRepository.save(order);
+            IOrderRepository.save(order);
+            return true;
         } else {
             throw new IllegalArgumentException("Order not found with ID: " + orderId);
         }
     }
-
-//    public List<OrderResponseDto> getOrdersByUserId(Integer userId) {
-//        List<OrderEntity> orders = IOrderRepository.findByUserId(userId);
-//        return orders.isEmpty() ? Collections.emptyList() : orders.stream()
-//                .map(OrderMapper::toResponseDto)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public List<OrderEntity> getOrdersByUserEmail(String email) {
-//        UserEntity user = IUserRepository.findByEmail(email)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//        return IOrderRepository.findOrdersByUserId(user.getId());
-//    }
 
     public OrderEntity cancelOrder(int orderId) {
         Optional<OrderEntity> optionalOrder = IOrderRepository.findById(orderId);
