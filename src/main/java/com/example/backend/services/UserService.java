@@ -2,6 +2,8 @@ package com.example.backend.services;
 
 import com.example.backend.entities.UserEntity;
 import com.example.backend.mappers.UserMapper;
+import com.example.backend.models.UserUpdateDto;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.backend.entities.IUserService;
@@ -58,5 +60,18 @@ public class UserService implements IUserService {
         }
         System.out.println("Authentication successful for user: " + email);
         return user;
+    }
+
+    @Transactional
+    public void updateUserProfile(UserUpdateDto userUpdateDto) {
+        UserEntity userEntity = IUserRepository.findByEmail(userUpdateDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with email " + userUpdateDto.getEmail()));
+
+        userEntity.setFirstName(userUpdateDto.getFirstName());
+        userEntity.setLastName(userUpdateDto.getLastName());
+        userEntity.setPhone(userUpdateDto.getPhone());
+        userEntity.setAddress(userUpdateDto.getAddress());
+
+        IUserRepository.save(userEntity);
     }
 }

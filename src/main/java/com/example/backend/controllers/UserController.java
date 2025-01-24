@@ -3,6 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.entities.UserEntity;
 import com.example.backend.models.UserDtoLogin;
 import com.example.backend.models.UserDtoRegister;
+import com.example.backend.models.UserUpdateDto;
 import com.example.backend.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -37,7 +39,6 @@ public class UserController {
     public ResponseEntity<UserDtoRegister> register(@RequestBody UserDtoRegister userDtoRegister) {
         return ResponseEntity.ok(userService.create(userDtoRegister));
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDtoLogin loginDto) {
@@ -81,6 +82,12 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateUser(@RequestBody @Validated UserUpdateDto userUpdateDto){
+        userService.updateUserProfile(userUpdateDto);
+        return ResponseEntity.ok("User profile updated successfully");
     }
 }
 
