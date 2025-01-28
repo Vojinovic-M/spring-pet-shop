@@ -25,7 +25,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/login", "/user/register", "/user/google-login").permitAll() // Public endpoints
+                        .requestMatchers("/user/login", "/user/register", "/user/google-login", "/orders/{petId}/ratings").permitAll() // Public endpoints
                         .requestMatchers("/user/dashboard", "/cart/**", "/orders/**").authenticated() // Protected endpoints
                         .anyRequest().permitAll() // Everything else public
                 )

@@ -4,12 +4,14 @@ import com.example.backend.entities.PetEntity;
 import com.example.backend.entities.UserEntity;
 import com.example.backend.enums.OrderStatus;
 import com.example.backend.models.OrderDto;
+import com.example.backend.models.RatingDto;
 import com.example.backend.repositories.IOrderRepository;
 import com.example.backend.repositories.IPetRepository;
 import com.example.backend.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -91,5 +93,15 @@ public class OrderService {
             throw new IllegalArgumentException("Order not found with ID: " + orderId);
         }
     }
+
+    public List<RatingDto> getRatingsByPetId(int petId) {
+        List<OrderEntity> orders = IOrderRepository.findByPetIdAndRating(petId);
+
+        return orders.stream()
+                .map(order -> new RatingDto(order.getUser().getEmail(), order.getRating()))
+                .toList();
+    }
+
+
 
 }

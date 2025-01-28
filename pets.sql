@@ -63,6 +63,6 @@ insert into users (first_name, last_name, email, phone, address, password) value
 	('Cvetolik', 'Cvetolikovic', 'cvetolik@gmail.com','38160121212', 'Backa Palanka', '$2a$10$mJdOhxG.PSvKdvr2zSrr9ejiPynHkcxlOalO9Uzj9vvAJtgOQwGt6'),
 	('Dragoslav', 'Dragoslavljevic', 'dragoslav@gmail.com','38160121212', 'Jagodina', '$2a$10$Ea8hUItNl3dXk0.LHtV1hO7iH6CzLlemVcU7I0/msX40y1sWqQIbW'),
 	('Radasin', 'Radasinovic', 'radasin@gmail.com','38160121212', 'Petrovac na Mlavi', '$2a$10$wENXgXWyl/Y4Avv1cPf7tOqHmLx8oaT2LOUKWmzr7uoMc/ykXx03u'),
-	('Petar', 'Petrovic', 'petar@gmail.com','38160121212', 'Subotica', '$2a$10$R.DZc2Z6x0f4H0xrSFZ9eOopBZlxf5pfhvpqaSsDUsPMltgk4Dklm');
+	('Petar', 'Petrovic', 'petar@gmail.com','+38160121212', 'Kolubarska 139, Subotica', '$2a$10$R.DZc2Z6x0f4H0xrSFZ9eOopBZlxf5pfhvpqaSsDUsPMltgk4Dklm');
 
     

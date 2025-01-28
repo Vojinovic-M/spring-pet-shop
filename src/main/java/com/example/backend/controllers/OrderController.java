@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 //import org.slf4j.LoggerFactory;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -80,6 +81,20 @@ public class OrderController {
             return ResponseEntity.ok(cancelledOrder);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("/{petId}/ratings")
+    public ResponseEntity<?> getRatingsByPetId(@PathVariable int petId) {
+        try {
+            List<RatingDto> ratings = orderService.getRatingsByPetId(petId);
+            if (ratings.isEmpty()) {
+                return ResponseEntity.ok("No ratings available for this pet.");
+            }
+            return ResponseEntity.ok(ratings);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving ratings: " + e.getMessage());
         }
     }
 
