@@ -4,9 +4,9 @@ use pets;
 
 create table dogs (
 	id int unsigned not null auto_increment primary key,
-    name varchar(80) not null,
-    description varchar(500) not null,
-    breed varchar(80) not null,
+    name varchar(63) not null,
+    description varchar(511) not null,
+    breed varchar(63) not null,
     age int(3) not null,
     size int(3) not null,
     origin varchar(80) not null,
@@ -18,10 +18,23 @@ create table users (
 	id int unsigned not null auto_increment primary key,
     first_name varchar(20) not null,
     last_name varchar(40) not null,
-    email varchar(80) not null,
-    phone int(14) not null,
+    email varchar(80) not null unique,
+    phone varchar(13) not null,
     address varchar(120) not null,
+    google_id varchar(255) not null,
     password varchar(200) not null
+);
+create table orders (
+	id int unsigned not null auto_increment primary key,
+    pet_id int unsigned not null,
+	user_id int unsigned not null,
+    order_status varchar(15),
+    created_at TIMESTAMP DEFAULT current_timestamp not null,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    rating int(2),
+	constraint fk_person_order foreign key (user_id) references users(id),
+    constraint fk_pet_order foreign key (pet_id) references dogs(id)
+
 );
 
 insert into dogs(name, description, breed, age, size, origin, price, image_url) values 
@@ -46,11 +59,11 @@ insert into users (first_name, last_name, email, phone, address, password) value
 	('Luka', 'Lukic', 'luka@gmail.com','3816060606', 'Pristina', '$2a$10$3wB61PSySqN4.xKFC5Q47e2GRB12Z.lRYoYAm0V9ZtjF0vMyLX6Dq'),
 	('Jovan', 'Jovanovic', 'jovan@gmail.com','38160121212', 'Negotin', '$2a$10$.WCPIsFFi2sflgLL5LwP.OpK1ju.cZZRobaZgu0TSVQl5fGuPQwAa'),
 	('Darko', 'Darkovic', 'darko@gmail.com','38160121212', 'Gnjilane', '$2a$10$.ZzLHvPCQP3UKnbGnrSci.SeoEXLTYGaCXtQYD8qj9wQfzG6whx0G'),
-	('Akstenije', 'Aksentijevic', 'aksentije@gmail.com','38160121212', 'Raska', '$2a$10$Xn1E/Ohjq3U7AtVCnBv9/uJAqx3nQH.0LVqlvdjje8fkCryTDZgSe'),
+	('Aksentije', 'Aksentijevic', 'aksentije@gmail.com','38160121212', 'Raska', '$2a$10$Xn1E/Ohjq3U7AtVCnBv9/uJAqx3nQH.0LVqlvdjje8fkCryTDZgSe'),
 	('Bogdan', 'Bogdanovic', 'bogdan@gmail.com','38160121212', 'Kraljevo', '$2a$10$7kgzRp2v3tK5uGEznK0Z8OXO5EiWpWn2zz9rcO4zNISEbwKl00H5u'),
 	('Cvetolik', 'Cvetolikovic', 'cvetolik@gmail.com','38160121212', 'Backa Palanka', '$2a$10$mJdOhxG.PSvKdvr2zSrr9ejiPynHkcxlOalO9Uzj9vvAJtgOQwGt6'),
 	('Dragoslav', 'Dragoslavljevic', 'dragoslav@gmail.com','38160121212', 'Jagodina', '$2a$10$Ea8hUItNl3dXk0.LHtV1hO7iH6CzLlemVcU7I0/msX40y1sWqQIbW'),
 	('Radasin', 'Radasinovic', 'radasin@gmail.com','38160121212', 'Petrovac na Mlavi', '$2a$10$wENXgXWyl/Y4Avv1cPf7tOqHmLx8oaT2LOUKWmzr7uoMc/ykXx03u'),
-	('Petar', 'Petrovic', 'petar@gmail.com','38160121212', 'Subotica', '$2a$10$R.DZc2Z6x0f4H0xrSFZ9eOopBZlxf5pfhvpqaSsDUsPMltgk4Dklm');
+	('Petar', 'Petrovic', 'petar@gmail.com','+38160121212', 'Kolubarska 139, Subotica', '$2a$10$R.DZc2Z6x0f4H0xrSFZ9eOopBZlxf5pfhvpqaSsDUsPMltgk4Dklm');
 
     
