@@ -19,10 +19,10 @@ create table users (
     first_name varchar(20) not null,
     last_name varchar(40) not null,
     email varchar(80) not null unique,
-    phone varchar(13),
-    address varchar(120),
-    google_id varchar(255),
-    password varchar(200)
+    phone varchar(13) not null,
+    address varchar(120) not null,
+    google_id varchar(255) not null,
+    password varchar(200) not null
 );
 create table orders (
 	id int unsigned not null auto_increment primary key,
@@ -34,6 +34,7 @@ create table orders (
     rating int(2),
 	constraint fk_person_order foreign key (user_id) references users(id),
     constraint fk_pet_order foreign key (pet_id) references dogs(id)
+
 );
 
 insert into dogs(name, description, breed, age, size, origin, price, image_url) values 
