@@ -4,19 +4,21 @@ import com.example.backend.entities.PetEntity;
 import com.example.backend.models.PetDto;
 
 public class PetMapper {
-    public static PetEntity toPetEntity(PetDto petDto) {
-        PetEntity petEntity = new PetEntity();
-        petEntity.setId(petDto.getId());
-        petEntity.setName(petDto.getName());
-        petEntity.setDescription(petDto.getDescription());
-        petEntity.setBreed(petDto.getBreed());
-        petEntity.setAge(petDto.getAge());
-        petEntity.setSize(petDto.getSize());
-        petEntity.setOrigin(petDto.getOrigin());
-        petEntity.setPrice(petDto.getPrice());
-        petEntity.setImageUrl(petDto.getImageUrl());
-        return petEntity;
-    }
+//    public static PetEntity toPetEntity(PetDto petDto) {
+//        PetEntity petEntity = new PetEntity();
+//        petEntity.setId(petDto.getId());
+//        petEntity.setName(petDto.getName());
+//        petEntity.setDescription(petDto.getDescription());
+//        petEntity.setBreed(petDto.getBreed());
+//        petEntity.setAge(petDto.getAge());
+//        petEntity.setSize(petDto.getSize());
+//        petEntity.setOrigin(petDto.getOrigin());
+//        petEntity.setOriginLat(petDto.getOriginLat());
+//        petEntity.setOriginLng(petDto.getOriginLng());
+//        petEntity.setPrice(petDto.getPrice());
+//        petEntity.setImageUrl(petDto.getImageUrl());
+//        return petEntity;
+//    }
 
     public static PetDto toPetDto(PetEntity petEntity) {
         return PetDto.builder()
@@ -27,6 +29,8 @@ public class PetMapper {
                 .age(petEntity.getAge())
                 .size(petEntity.getSize())
                 .origin(petEntity.getOrigin())
+                .originLat(petEntity.getOriginLat())
+                .originLng(petEntity.getOriginLng())
                 .price(petEntity.getPrice())
                 .imageUrl(petEntity.getImageUrl())
                 .build();

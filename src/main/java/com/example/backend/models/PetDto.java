@@ -13,6 +13,8 @@ public class PetDto {
     private Integer age;
     private Integer size;
     private String origin;
+    private Double originLat;
+    private Double originLng;
     private Integer price;
     private String imageUrl;
 }
