@@ -37,7 +37,7 @@ create table orders (
 
 );
 
-insert into dogs(name, description, breed, age, size, origin, price, image_url) values 
+insert into dogs(name, description, breed, age, size, origin, price, image_url) values
 	('Bruno', 'Good boy', 'Golden Retriever', 8, 185, 'Gnjilane', 150, 'https://plus.unsplash.com/premium_photo-1723709016897-3cc15635e618?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
     ('Dzoni', 'Goodest boy', 'Illyrian Shepherd', 1, 210, 'Svrljig', 95, 'https://upload.wikimedia.org/wikipedia/commons/a/a6/Sarplaninac_k%C3%B6ly%C3%B6k.JPG'),
     ('Roki', 'Strong boy', 'American Stafford', 5, 150, 'Cacak', 50, 'https://cdn.pixabay.com/photo/2015/03/14/04/24/american-staffordshire-terrier-672699_1280.jpg'),
@@ -52,7 +52,7 @@ insert into dogs(name, description, breed, age, size, origin, price, image_url) 
     ('Niksa', 'Big shepherd boy', 'Caucasian Shepherd', 3, 220, 'Niksic', 80, 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Owczarek_kaukaski_65556.jpg'),
     ('Micko', 'Proud lil guy', 'Black Schnauzer', 3, 80, 'Kladovo', 20, 'https://upload.wikimedia.org/wikipedia/commons/3/3b/BlkStdSchnauzer2.jpg'),
     ('Leo', 'Wannabe shepherd', 'Jack Russel', 4, 80, 'Skadar', 30, 'https://upload.wikimedia.org/wikipedia/commons/9/99/Brooks_Chase_Ranger_of_Jolly_Dogs_Jack_Russell.jpg');
-    
+
 insert into users (first_name, last_name, email, phone, address, password) values
 	('Matej', 'Matejevic', 'matej@gmail.com','38165151151', 'Nis', '$2a$10$xphhF81dU1yCcINdh/Jy.eX4O1GBgw6KB6Oqgsa7sqEgjJeLdHVum'),
 	('Marko', 'Markovic', 'marko@gmail.com','38163333666', 'Beograd','$2a$10$kg4AVsxDH6kisK9ZnpWWyeBldRYpUyXL1vujUdp5gJ7HqdQRyHVI2'),

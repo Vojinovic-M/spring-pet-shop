@@ -27,6 +27,10 @@ public class PetEntity {
     private Integer size;
     @Column(name = "origin")
     private String origin;
+    @Column(name = "origin_lat")
+    private Double originLat;
+    @Column(name = "origin_lng")
+    private Double originLng;
     @Column(name = "price")
     private Integer price;
     @Column(name = "image_url")
